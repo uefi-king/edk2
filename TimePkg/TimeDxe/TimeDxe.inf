@@ -1,0 +1,43 @@
+## @file
+# This driver produces Debug Port protocol to be used by debug agent to communicate with the remote debug host.
+#
+# This driver binds exclusively to a standard UART serial port on the controller handle,
+# and initializes serial Io interface, publishs Debug Port and Device Path Protocol.
+#
+# Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TimeDxe
+  FILE_GUID                      = 4cf23026-65cb-4a12-b76d-6850c88cf883
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeTimeDxe
+
+
+[Sources]
+  TimeDxe.h
+  TimeDxe.c
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+
+[LibraryClasses]
+  #UefiRuntimeServicesTableLib
+  UefiLib
+  DebugLib
+
+
+#[Protocols]
+#  gEfiTimestampProtocolGuid
+
+
+[Depex]
+  TRUE

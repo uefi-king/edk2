@@ -1103,3 +1103,9 @@
   # TPM support
   #
 !include OvmfPkg/OvmfTpmComponentsDxe.dsc.inc
+
+  #
+  # UEFI Project
+  #
+
+  TimePkg/TimeDxe/TimeDxe.inf
