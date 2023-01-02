@@ -1774,6 +1774,28 @@ EFI_STATUS
   OUT UINT64            *MaximumVariableSize
   );
 
+typedef
+EFI_STATUS
+(EFIAPI *EFI_GET_FLASH_SIZE)(
+  OUT   UINTN           *FlashSize
+  );
+
+typedef
+EFI_STATUS
+(EFIAPI *EFI_READ_FLASH)(
+  IN     UINTN          Offset,
+  IN OUT UINTN          *DataSize,
+  OUT    VOID           *Data
+  );
+
+typedef
+EFI_STATUS
+(EFIAPI *EFI_WRITE_FLASH)(
+  IN     UINTN          Offset,
+  IN OUT UINTN          *DataSize,
+  OUT    VOID           *Data
+  );
+
 //
 // Firmware should stop at a firmware user interface on next boot
 //
@@ -1853,6 +1875,14 @@ typedef struct {
   // Miscellaneous UEFI 2.0 Service
   //
   EFI_QUERY_VARIABLE_INFO           QueryVariableInfo;
+
+  //
+  // Flash Services
+  //
+  EFI_GET_FLASH_SIZE              GetFlashSize;
+  EFI_READ_FLASH                  ReadFlash;
+  EFI_WRITE_FLASH                 WriteFlash;
+
 } EFI_RUNTIME_SERVICES;
 
 #define EFI_BOOT_SERVICES_SIGNATURE  SIGNATURE_64 ('B','O','O','T','S','E','R','V')

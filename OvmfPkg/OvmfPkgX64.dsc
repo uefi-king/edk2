@@ -1103,3 +1103,5 @@
   # TPM support
   #
 !include OvmfPkg/OvmfTpmComponentsDxe.dsc.inc
+
+  FlashPkg/FlashDxe/FlashRuntimeDxe.inf
