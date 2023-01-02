@@ -410,6 +410,8 @@ INF  MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 #
 !include OvmfPkg/OvmfTpmDxe.fdf.inc
 
+INF  FlashPkg/FlashDxe/FlashRuntimeDxe.inf
+
 ################################################################################
 
 [FV.FVMAIN_COMPACT]

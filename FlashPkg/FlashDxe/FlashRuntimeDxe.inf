@@ -1,0 +1,41 @@
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = FlashRuntimeDxe
+  FILE_GUID      = 4271b452-8a53-11ed-bdef-00155d5aa604
+  MODULE_TYPE    = DXE_RUNTIME_DRIVER
+  VERSION_STRING = 1.0
+  ENTRY_POINT    = FlashServiceInitialize
+
+[Sources]
+  FlashRuntimeDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  OvmfPkg/OvmfPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeLib
+  DebugLib
+  BaseMemoryLib
+
+[FixedPcd]
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFdBaseAddress
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFirmwareFdSize
+
+[Depex]
+  gEfiBdsArchProtocolGuid AND
+  gEfiCpuArchProtocolGuid AND
+  gEfiMetronomeArchProtocolGuid AND
+  gEfiMonotonicCounterArchProtocolGuid AND
+  gEfiRealTimeClockArchProtocolGuid AND
+  gEfiResetArchProtocolGuid AND
+  gEfiRuntimeArchProtocolGuid AND
+  gEfiSecurityArchProtocolGuid AND
+  gEfiTimerArchProtocolGuid AND
+  gEfiVariableWriteArchProtocolGuid AND
+  gEfiVariableArchProtocolGuid AND
+  gEfiWatchdogTimerArchProtocolGuid

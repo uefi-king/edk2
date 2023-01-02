@@ -1109,3 +1109,4 @@
   #
 
   TimePkg/TimeDxe/TimeDxe.inf
+  FlashPkg/FlashDxe/FlashRuntimeDxe.inf
