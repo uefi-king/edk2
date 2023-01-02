@@ -36,5 +36,20 @@ InternalGetPerformanceCounterFrequency (
   VOID
   )
 {
+  UINT32 RegEax;
+  UINT32 RegEcx;
+
+  // after cpuid[%eax=0x1], the most significant bit of %ecx indicates whether we are in a VM
+  AsmCpuid (0x1, NULL, NULL, &RegEcx, NULL);
+
+  if (RegEcx & (1 << 31)) {
+    // now we are in a VM
+    // cpuid[%eax=0x15] is disabled in Qemu
+    // cpuid[%eax=0x40000010] returns in %eax the CPU frequency in KHz
+    //   but needs be supported in Qemu by adding -cpu flags: +invtsc,+vmware-cpuid-freq
+    AsmCpuid (0x40000010, &RegEax, NULL, NULL, NULL);
+    return MultU64x32 (1000, RegEax);
+  }
+  // we are not in a VM
   return CpuidCoreClockCalculateTscFrequency ();
 }
