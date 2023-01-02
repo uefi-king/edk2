@@ -1108,3 +1108,4 @@
   # UEFI Project
   #
   TimePkg/TimeDxe/TimeDxe.inf
+  FlashPkg/FlashDxe/FlashRuntimeDxe.inf
