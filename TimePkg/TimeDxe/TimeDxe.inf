@@ -21,23 +21,23 @@
 
 
 [Sources]
+  TimeLib.h
+  TimeLib.c
   TimeDxe.h
   TimeDxe.c
 
 
 [Packages]
   MdePkg/MdePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
 
 
 [LibraryClasses]
-  #UefiRuntimeServicesTableLib
   UefiDriverEntryPoint
   UefiLib
   DebugLib
-
-
-#[Protocols]
-#  gEfiTimestampProtocolGuid
+  TimerLib
+  BaseMemoryLib
 
 
 [Depex]
