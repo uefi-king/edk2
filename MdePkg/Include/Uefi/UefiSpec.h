@@ -1780,6 +1780,8 @@ EFI_STATUS
   OUT   UINTN           *seconds
   );
 
+typedef
+EFI_STATUS
 (EFIAPI *EFI_GET_FLASH_SIZE)(
   OUT   UINTN           *FlashSize
   );
