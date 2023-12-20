@@ -82,7 +82,8 @@ EFI_RUNTIME_SERVICES  MockRuntime = {
   MockResetSystem,    // ResetSystem
   NULL,               // UpdateCapsule
   NULL,               // QueryCapsuleCapabilities
-  NULL                // QueryVariableInfo
+  NULL,               // QueryVariableInfo
+  NULL,               // GetUptime
 };
 
 /**

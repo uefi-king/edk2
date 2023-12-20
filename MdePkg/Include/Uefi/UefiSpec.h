@@ -1774,6 +1774,12 @@ EFI_STATUS
   OUT UINT64            *MaximumVariableSize
   );
 
+typedef
+EFI_STATUS
+(EFIAPI *EFI_GET_UPTIME)(
+  OUT UINT64            *Ticks
+  );
+
 //
 // Firmware should stop at a firmware user interface on next boot
 //
@@ -1853,6 +1859,11 @@ typedef struct {
   // Miscellaneous UEFI 2.0 Service
   //
   EFI_QUERY_VARIABLE_INFO           QueryVariableInfo;
+
+  //
+  // Uptime Service
+  //
+  EFI_GET_UPTIME                    GetUptime;
 } EFI_RUNTIME_SERVICES;
 
 #define EFI_BOOT_SERVICES_SIGNATURE  SIGNATURE_64 ('B','O','O','T','S','E','R','V')

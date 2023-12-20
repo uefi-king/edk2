@@ -344,6 +344,7 @@ RuntimeDriverSetVirtualAddressMap (
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->QueryVariableInfo);
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->UpdateCapsule);
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->QueryCapsuleCapabilities);
+  RuntimeDriverConvertInternalPointer ((VOID **)&gRT->GetUptime);
   RuntimeDriverCalculateEfiHdrCrc (&gRT->Hdr);
 
   //

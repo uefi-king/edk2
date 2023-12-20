@@ -163,7 +163,8 @@ EFI_RUNTIME_SERVICES  mEfiRuntimeServicesTableTemplate = {
   (EFI_RESET_SYSTEM)CoreEfiNotAvailableYetArg4,                   // ResetSystem
   (EFI_UPDATE_CAPSULE)CoreEfiNotAvailableYetArg3,                 // UpdateCapsule
   (EFI_QUERY_CAPSULE_CAPABILITIES)CoreEfiNotAvailableYetArg4,     // QueryCapsuleCapabilities
-  (EFI_QUERY_VARIABLE_INFO)CoreEfiNotAvailableYetArg4             // QueryVariableInfo
+  (EFI_QUERY_VARIABLE_INFO)CoreEfiNotAvailableYetArg4,            // QueryVariableInfo
+  (EFI_GET_UPTIME)CoreEfiNotAvailableYetArg1                      // GetUptime
 };
 
 EFI_RUNTIME_ARCH_PROTOCOL  gRuntimeTemplate = {

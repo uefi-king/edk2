@@ -1,0 +1,28 @@
+## @file
+# This dirver provide performance counter since system boot.
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = UptimeDxe
+  FILE_GUID                      = ACF2CA4B-E2AC-4FD5-A08D-A45FBA30C960
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = UptimeInitialize
+
+[Sources.Common]
+  UptimeDxe.c
+  UptimeDxe.h
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiLib
+  DebugLib
+  TimerLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[Depex]
+  TRUE

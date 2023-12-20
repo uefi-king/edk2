@@ -1123,3 +1123,8 @@
   # TPM support
   #
 !include OvmfPkg/Include/Dsc/OvmfTpmComponentsDxe.dsc.inc
+
+  #
+  # Uptime support
+  #
+  UptimePkg/UptimeDxe/UptimeDxe.inf
