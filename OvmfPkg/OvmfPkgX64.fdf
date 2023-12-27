@@ -235,6 +235,7 @@ INF  MdeModulePkg/Core/Dxe/DxeMain.inf
 
 # Uptime
 INF  UptimePkg/UptimeDxe/UptimeDxe.inf
+INF  FlashPkg/FlashDxe/FlashDxe.inf
 
 INF  MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
 INF  MdeModulePkg/Universal/StatusCodeHandler/RuntimeDxe/StatusCodeHandlerRuntimeDxe.inf
