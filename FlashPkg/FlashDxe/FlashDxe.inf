@@ -16,26 +16,47 @@
   UefiCpuPkg/UefiCpuPkg.dec
 
 [LibraryClasses]
-  UefiDriverEntryPoint
-  UefiBootServicesTableLib
-  UefiRuntimeLib
-  DebugLib
+  BaseLib
   BaseMemoryLib
+  DebugLib
+  DevicePathLib
+  DxeServicesTableLib
+  MemoryAllocationLib
+  PcdLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeLib
+  CcExitLib
+
+[Guids]
+  gEfiEventVirtualAddressChangeGuid   # ALWAYS_CONSUMED
+  # gEfiEventVirtualAddressChangeGuid # Create Event: EVENT_GROUP_GUID
+
+[Protocols]
+  gEfiFirmwareVolumeBlockProtocolGuid           # PROTOCOL SOMETIMES_PRODUCED
+  gEfiDevicePathProtocolGuid                    # PROTOCOL SOMETIMES_PRODUCED
+
 
 [FixedPcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashNvStorageVariableBase
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashNvStorageFtwWorkingBase
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashNvStorageFtwSpareBase
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashNvStorageEventLogSize
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFdBaseAddress
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFirmwareFdSize
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFirmwareBlockSize
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase64
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashVariablesEnable
+
+[FeaturePcd]
+  gUefiOvmfPkgTokenSpaceGuid.PcdSmmSmramRequire
 
 [Depex]
-  gEfiBdsArchProtocolGuid AND
-  gEfiCpuArchProtocolGuid AND
-  gEfiMetronomeArchProtocolGuid AND
-  gEfiMonotonicCounterArchProtocolGuid AND
-  gEfiRealTimeClockArchProtocolGuid AND
-  gEfiResetArchProtocolGuid AND
-  gEfiRuntimeArchProtocolGuid AND
-  gEfiSecurityArchProtocolGuid AND
-  gEfiTimerArchProtocolGuid AND
-  gEfiVariableWriteArchProtocolGuid AND
-  gEfiVariableArchProtocolGuid AND
-  gEfiWatchdogTimerArchProtocolGuid
+  TRUE
