@@ -9,11 +9,8 @@
 #define ENCRYPTION_KEY  0xbf
 
 #define WRITE_BYTE_CMD           0x10
-#define BLOCK_ERASE_CMD          0x20
 #define CLEAR_STATUS_CMD         0x50
 #define READ_STATUS_CMD          0x70
-#define READ_DEVID_CMD           0x90
-#define BLOCK_ERASE_CONFIRM_CMD  0xd0
 #define READ_ARRAY_CMD           0xff
 
 #define CLEARED_ARRAY_STATUS  0x00
@@ -126,6 +123,13 @@ QemuFlashDetected (
   return FlashDetected;
 }
 
+#define FLASH_RW_SIZE(Offset, DataSize) \
+  ((Offset >= mFlashSize) \
+    ? 0 \
+    : ((Offset + DataSize > mFlashSize) \
+      ? mFlashSize - Offset \
+      : DataSize))
+
 
 EFI_STATUS
 EFIAPI
@@ -140,11 +144,7 @@ FlashServiceReadFlash (
   DEBUG ((DEBUG_INFO, "FlashServiceReadFlash(%lld, %lld, %p)\n",
           Offset, *DataSize, Data));
 
-  if (Offset >= mFlashSize) {
-    *DataSize = 0;
-  } else if (Offset + *DataSize > mFlashSize) {
-    *DataSize = mFlashSize - Offset;
-  }
+  *DataSize = FLASH_RW_SIZE(Offset, *DataSize);
 
   CopyMem (Data, mFlashBase + Offset, *DataSize);
 
@@ -169,11 +169,7 @@ FlashServiceWriteFlash (
   DEBUG ((DEBUG_INFO, "FlashServiceWriteFlash(%lld, %lld, %p)\n",
           Offset, *DataSize, Data));
 
-  if (Offset >= mFlashSize) {
-    *DataSize = 0;
-  } else if (Offset + *DataSize > mFlashSize) {
-    *DataSize = mFlashSize - Offset;
-  }
+  *DataSize = FLASH_RW_SIZE(Offset, *DataSize);
 
   Ptr = mFlashBase + Offset;
   for (Index = 0; Index < *DataSize; Index++, Ptr++) {
@@ -195,11 +191,7 @@ OnSetVirtualAddressMap (
   IN VOID       *Context
   )
 {
-  EFI_STATUS  Status;
-
-  Status = EfiConvertPointer (0x0, (VOID **)&mFlashBase);
-  ASSERT_EFI_ERROR (Status);
-  DEBUG ((DEBUG_INFO, "Flash base changed: %p\n", mFlashBase));
+  ASSERT_EFI_ERROR (EfiConvertPointer (0x0, (VOID **)&mFlashBase));
 }
 
 EFI_STATUS
@@ -219,10 +211,10 @@ FlashServiceInitialize (
   ASSERT (mFlashSize % mFdBlockSize == 0);
   mFdBlockCount = PcdGet32 (PcdOvmfFirmwareFdSize) / mFdBlockSize; 
   
-  DEBUG ((DEBUG_INFO, "Flash base: %p\n", mFlashBase));
-  DEBUG ((DEBUG_INFO, "FdBlock size: %p\n", mFdBlockSize));
-  DEBUG ((DEBUG_INFO, "FdBlock count: %p\n", mFdBlockCount));
-  DEBUG ((DEBUG_INFO, "Flash size: %lld\n", mFlashSize));
+  DEBUG ((DEBUG_INFO, "[FlashService] Flash base:    %p\n", mFlashBase));
+  DEBUG ((DEBUG_INFO, "[FlashService] FdBlock size:  %p\n", mFdBlockSize));
+  DEBUG ((DEBUG_INFO, "[FlashService] FdBlock count: %p\n", mFdBlockCount));
+  DEBUG ((DEBUG_INFO, "[FlashService] Flash size:    %lld\n", mFlashSize));
 
   if (!QemuFlashDetected()) {
     ASSERT (!FeaturePcdGet (PcdSmmSmramRequire));
