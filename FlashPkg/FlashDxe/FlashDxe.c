@@ -19,9 +19,6 @@
 
 #define CLEARED_ARRAY_STATUS  0x00
 
-#define mFlashSec L"FlashSec"
-#define mFlashSecGuid { 0xbf52cb64, 0x8fb9, 0x46e8, { 0x80, 0x22, 0xdd, 0xd7, 0x85, 0x4b, 0xc4, 0x53 } }
-
 STATIC UINT8  *mFlashBase = NULL;
 STATIC UINTN  mFlashSize  = 0;
 STATIC UINTN  mFdBlockSize  = 0;
@@ -202,45 +199,6 @@ OnSetVirtualAddressMap (
 
 EFI_STATUS
 EFIAPI
-CreateNVVariable()
-{
-    EFI_STATUS             Status;
-    UINTN                  BufferSize;
-    EFI_GUID FlashSecGuid = mFlashSecGuid;
-    UINTN    FlashSec = 1;
-
-    BufferSize = sizeof(UINTN);
-
-    Status = gRT->GetVariable(
-                    mFlashSec,
-                    &FlashSecGuid,
-                    NULL,
-                    &BufferSize,
-                    &FlashSec
-                    );
-    if (EFI_ERROR(Status)) {
-        if (Status == EFI_NOT_FOUND) {
-            Status = gRT->SetVariable(
-                            mFlashSec,
-                            &FlashSecGuid,
-                            EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_RUNTIME_ACCESS,
-                            BufferSize,
-                            &FlashSec
-                            );
-
-            DEBUG((DEBUG_INFO, "%s(): Variable %s created in NVRam Var\r\n", mFlashSec));
-
-            return EFI_SUCCESS;
-        }
-    }
-    // already defined once 
-    DEBUG((DEBUG_INFO, "%s(): Variable %s already defined in NVRam Var\r\n", mFlashSec));
-
-    return EFI_SUCCESS;
-}
-
-EFI_STATUS
-EFIAPI
 FlashServiceInitialize (
   IN EFI_HANDLE        ImageHandle,
   IN EFI_SYSTEM_TABLE  *SystemTable
@@ -269,9 +227,6 @@ FlashServiceInitialize (
   SystemTable->RuntimeServices->GetFlashSize  = FlashServiceGetFlashSize;
   SystemTable->RuntimeServices->ReadFlash     = FlashServiceReadFlash;
   SystemTable->RuntimeServices->WriteFlash    = FlashServiceWriteFlash;
-
-  Status = CreateNVVariable();
-  ASSERT_EFI_ERROR (Status);
 
   Status = gBS->CreateEvent (
     EVT_SIGNAL_VIRTUAL_ADDRESS_CHANGE,
