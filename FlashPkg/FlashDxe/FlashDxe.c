@@ -142,29 +142,6 @@ FlashServiceReadFlash (
   DEBUG ((DEBUG_INFO, "FlashServiceReadFlash(%lld, %lld, %p)\n",
           Offset, *DataSize, Data));
 
-  EFI_STATUS             Status;
-  UINTN                  BufferSize;
-  EFI_GUID MyVarGuid = mFlashSecGuid;
-  BufferSize = sizeof(UINTN);
-
-  UINTN    FlashSec;
-
-  Status = gRT->GetVariable(
-                  mFlashSec,
-                  &MyVarGuid,
-                  NULL,
-                  &BufferSize,
-                  &FlashSec
-                  );
-  ASSERT_EFI_ERROR (Status);
-
-  if (FlashSec == 0) {
-    Offset += CODE_BASE;
-  }
-  else {
-    Offset += BLOCK_BASE;
-  }
-
   if (Offset >= mFlashSize) {
     *DataSize = 0;
   } else if (Offset + *DataSize > mFlashSize) {
@@ -189,29 +166,6 @@ FlashServiceWriteFlash (
 
   DEBUG ((DEBUG_INFO, "FlashServiceWriteFlash(%lld, %lld, %p)\n",
           Offset, *DataSize, Data));
-
-  EFI_STATUS             Status;
-  UINTN                  BufferSize;
-  EFI_GUID MyVarGuid = mFlashSecGuid;
-  BufferSize = sizeof(UINTN);
-
-  UINTN    FlashSec;
-
-  Status = gRT->GetVariable(
-                  mFlashSec,
-                  &MyVarGuid,
-                  NULL,
-                  &BufferSize,
-                  &FlashSec
-                  );
-  ASSERT_EFI_ERROR (Status);
-
-  if (FlashSec == 0) {
-    Offset += CODE_BASE;
-  }
-  else {
-    Offset += BLOCK_BASE;
-  }
 
   if (Offset >= mFlashSize) {
     *DataSize = 0;
