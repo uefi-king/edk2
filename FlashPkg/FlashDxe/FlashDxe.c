@@ -6,8 +6,7 @@
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/PcdLib.h>
 
-#define CODE_BASE            0x0
-#define BLOCK_BASE           0x3C0000
+#define ENCRYPTION_KEY  0xbf
 
 #define WRITE_BYTE_CMD           0x10
 #define BLOCK_ERASE_CMD          0x20
@@ -136,6 +135,8 @@ FlashServiceReadFlash (
   OUT    VOID           *Data
   )
 { 
+  UINTN                 Index;
+
   DEBUG ((DEBUG_INFO, "FlashServiceReadFlash(%lld, %lld, %p)\n",
           Offset, *DataSize, Data));
 
@@ -146,6 +147,10 @@ FlashServiceReadFlash (
   }
 
   CopyMem (Data, mFlashBase + Offset, *DataSize);
+
+  for (Index = 0; Index < *DataSize; Index++) {
+    ((UINT8 *)Data)[Index] = ((UINT8 *)Data)[Index] ^ (UINT8)ENCRYPTION_KEY;
+  }
   
   return EFI_SUCCESS;
 }
@@ -173,7 +178,7 @@ FlashServiceWriteFlash (
   Ptr = mFlashBase + Offset;
   for (Index = 0; Index < *DataSize; Index++, Ptr++) {
     *Ptr = WRITE_BYTE_CMD;
-    *Ptr = ((UINT8 *)Data)[Index];
+    *Ptr = ((UINT8 *)Data)[Index] ^ (UINT8)ENCRYPTION_KEY;
   }
   
   if (*DataSize > 0) {
