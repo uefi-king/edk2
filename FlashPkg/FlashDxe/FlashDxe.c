@@ -12,11 +12,15 @@
 #define CLEAR_STATUS_CMD         0x50
 #define READ_STATUS_CMD          0x70
 #define READ_ARRAY_CMD           0xff
+#define NVRAM_FREE_OFFSET        0x42000
+#define NVRAM_FREE_SIZE          0x42000
 
 #define CLEARED_ARRAY_STATUS  0x00
 
 STATIC UINT8  *mFlashBase = NULL;
 STATIC UINTN  mFlashSize  = 0;
+STATIC UINT8  *mFlashBaseEncrypted = NULL;
+STATIC UINTN  mFlashSizeEncrypted  = 0;
 STATIC UINTN  mFdBlockSize  = 0;
 STATIC UINTN  mFdBlockCount = 0;
 STATIC EFI_EVENT  mSetVirtualAddressMapEvent  = NULL;
@@ -24,11 +28,17 @@ STATIC EFI_EVENT  mSetVirtualAddressMapEvent  = NULL;
 EFI_STATUS
 EFIAPI
 FlashServiceGetFlashSize (
+  IN     BOOLEAN        Encrypted,
   OUT    UINTN          *FlashSize
   )
 {
   DEBUG((DEBUG_INFO, "GetFlashSize called\n"));
-  *FlashSize = mFlashSize;
+
+  if (Encrypted) {
+    *FlashSize = mFlashSizeEncrypted;
+  } else {
+    *FlashSize = mFlashSize;
+  }
   
   return EFI_SUCCESS;
 }
@@ -130,34 +140,47 @@ QemuFlashDetected (
       ? mFlashSize - Offset \
       : DataSize))
 
+#define FLASH_RW_SIZE_ENCRYPTED(Offset, DataSize) \
+  ((Offset >= mFlashSizeEncrypted) \
+    ? 0 \
+    : ((Offset + DataSize > mFlashSizeEncrypted) \
+      ? mFlashSizeEncrypted - Offset \
+      : DataSize))
 
 EFI_STATUS
 EFIAPI
 FlashServiceReadFlash (
+  IN     BOOLEAN        Encrypted,
   IN     UINTN          Offset,
   IN OUT UINTN          *DataSize,
   OUT    VOID           *Data
   )
 { 
   UINTN                 Index;
+  DEBUG ((DEBUG_INFO, "FlashServiceReadFlash(%d, %lld, %lld, %p)\n",
+          Encrypted, Offset, *DataSize, Data));
 
-  DEBUG ((DEBUG_INFO, "FlashServiceReadFlash(%lld, %lld, %p)\n",
-          Offset, *DataSize, Data));
+  if (Encrypted) {
+    *DataSize = FLASH_RW_SIZE_ENCRYPTED(Offset, *DataSize);
 
-  *DataSize = FLASH_RW_SIZE(Offset, *DataSize);
+    CopyMem (Data, mFlashBaseEncrypted + Offset, *DataSize);
 
-  CopyMem (Data, mFlashBase + Offset, *DataSize);
+    for (Index = 0; Index < *DataSize; Index++) {
+      ((UINT8 *)Data)[Index] = ((UINT8 *)Data)[Index] ^ (UINT8)ENCRYPTION_KEY;
+    }
+  } else {
+    *DataSize = FLASH_RW_SIZE(Offset, *DataSize);
 
-  for (Index = 0; Index < *DataSize; Index++) {
-    ((UINT8 *)Data)[Index] = ((UINT8 *)Data)[Index] ^ (UINT8)ENCRYPTION_KEY;
+    CopyMem (Data, mFlashBase + Offset, *DataSize);
   }
-  
+
   return EFI_SUCCESS;
 }
 
 EFI_STATUS
 EFIAPI
 FlashServiceWriteFlash (
+  IN     BOOLEAN        Encrypted,
   IN     UINTN          Offset,
   IN OUT UINTN          *DataSize,
   OUT    VOID           *Data
@@ -166,17 +189,27 @@ FlashServiceWriteFlash (
   UINT8                 *Ptr;
   UINTN                 Index;
 
-  DEBUG ((DEBUG_INFO, "FlashServiceWriteFlash(%lld, %lld, %p)\n",
-          Offset, *DataSize, Data));
+  DEBUG ((DEBUG_INFO, "FlashServiceWriteFlash(%d, %lld, %lld, %p)\n",
+          Encrypted, Offset, *DataSize, Data));
 
-  *DataSize = FLASH_RW_SIZE(Offset, *DataSize);
+  if (Encrypted) {
+    *DataSize = FLASH_RW_SIZE_ENCRYPTED(Offset, *DataSize);
 
-  Ptr = mFlashBase + Offset;
-  for (Index = 0; Index < *DataSize; Index++, Ptr++) {
-    *Ptr = WRITE_BYTE_CMD;
-    *Ptr = ((UINT8 *)Data)[Index] ^ (UINT8)ENCRYPTION_KEY;
+    Ptr = mFlashBaseEncrypted + Offset;
+    for (Index = 0; Index < *DataSize; Index++, Ptr++) {
+      *Ptr = WRITE_BYTE_CMD;
+      *Ptr = ((UINT8 *)Data)[Index] ^ (UINT8)ENCRYPTION_KEY;
+    }
+  } else {
+    *DataSize = FLASH_RW_SIZE(Offset, *DataSize);
+
+    Ptr = mFlashBase + Offset;
+    for (Index = 0; Index < *DataSize; Index++, Ptr++) {
+      *Ptr = WRITE_BYTE_CMD;
+      *Ptr = ((UINT8 *)Data)[Index];
+    }
   }
-  
+
   if (*DataSize > 0) {
     *(Ptr - 1) = READ_ARRAY_CMD;
   }
@@ -208,6 +241,8 @@ FlashServiceInitialize (
   mFlashBase   = (UINT8 *)(UINTN)PcdGet32 (PcdOvmfFdBaseAddress);
   mFdBlockSize = PcdGet32 (PcdOvmfFirmwareBlockSize);
   mFlashSize = PcdGet32 (PcdOvmfFirmwareFdSize);
+  mFlashBaseEncrypted = mFlashBase + NVRAM_FREE_OFFSET;
+  mFlashSizeEncrypted = NVRAM_FREE_SIZE;
   ASSERT (mFlashSize % mFdBlockSize == 0);
   mFdBlockCount = PcdGet32 (PcdOvmfFirmwareFdSize) / mFdBlockSize; 
   

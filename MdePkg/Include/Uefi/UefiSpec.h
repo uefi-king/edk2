@@ -1783,12 +1783,14 @@ EFI_STATUS
 typedef
 EFI_STATUS
 (EFIAPI *EFI_GET_FLASH_SIZE)(
+  IN     BOOLEAN        Encrypted,
   OUT   UINT64          *FlashSize
   );
 
 typedef
 EFI_STATUS
 (EFIAPI *EFI_READ_FLASH)(
+  IN     BOOLEAN        Encrypted,
   IN     UINT64         Offset,
   IN OUT UINT64         *DataSize,
   OUT    VOID           *Data
@@ -1797,6 +1799,7 @@ EFI_STATUS
 typedef
 EFI_STATUS
 (EFIAPI *EFI_WRITE_FLASH)(
+  IN     BOOLEAN        Encrypted,
   IN     UINT64         Offset,
   IN OUT UINT64         *DataSize,
   OUT    VOID           *Data
