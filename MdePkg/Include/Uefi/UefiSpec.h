@@ -1776,12 +1776,6 @@ EFI_STATUS
 
 typedef
 EFI_STATUS
-(EFIAPI *EFI_GET_UPTIME)(
-  OUT UINT64            *Ticks
-  );
-
-typedef
-EFI_STATUS
 (EFIAPI *EFI_GET_FLASH_SIZE)(
   IN     BOOLEAN        Encrypted,
   OUT   UINT64          *FlashSize
@@ -1885,10 +1879,8 @@ typedef struct {
   EFI_QUERY_VARIABLE_INFO           QueryVariableInfo;
 
   //
-  // Uptime Service
+  // Flash Service
   //
-  EFI_GET_UPTIME                    GetUptime;
-
   EFI_GET_FLASH_SIZE                GetFlashSize;
 
   EFI_READ_FLASH                    ReadFlash;

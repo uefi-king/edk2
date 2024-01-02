@@ -344,7 +344,6 @@ RuntimeDriverSetVirtualAddressMap (
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->QueryVariableInfo);
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->UpdateCapsule);
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->QueryCapsuleCapabilities);
-  RuntimeDriverConvertInternalPointer ((VOID **)&gRT->GetUptime);
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->GetFlashSize);
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->ReadFlash);
   RuntimeDriverConvertInternalPointer ((VOID **)&gRT->WriteFlash);

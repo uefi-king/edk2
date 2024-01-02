@@ -1125,11 +1125,6 @@
 !include OvmfPkg/Include/Dsc/OvmfTpmComponentsDxe.dsc.inc
 
   #
-  # Uptime support
-  #
-  UptimePkg/UptimeDxe/UptimeDxe.inf
-
-  #
   # Flash support
   #
   FlashPkg/FlashDxe/FlashDxe.inf

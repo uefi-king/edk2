@@ -83,7 +83,6 @@ EFI_RUNTIME_SERVICES  MockRuntime = {
   NULL,               // UpdateCapsule
   NULL,               // QueryCapsuleCapabilities
   NULL,               // QueryVariableInfo
-  NULL,               // GetUptime
   NULL,               // GetFlashSize
   NULL,               // ReadFlash
   NULL,               // WriteFlash

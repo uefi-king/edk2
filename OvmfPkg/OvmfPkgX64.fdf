@@ -233,8 +233,7 @@ APRIORI DXE {
 #
 INF  MdeModulePkg/Core/Dxe/DxeMain.inf
 
-# Uptime
-INF  UptimePkg/UptimeDxe/UptimeDxe.inf
+# Flash
 INF  FlashPkg/FlashDxe/FlashDxe.inf
 
 INF  MdeModulePkg/Universal/ReportStatusCodeRouter/RuntimeDxe/ReportStatusCodeRouterRuntimeDxe.inf
